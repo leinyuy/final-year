@@ -12,7 +12,6 @@ const Profile = () => {
   const [addingSkill, setAddingSkill] = useState(false);
   const [addingExperience, setAddingExperience] = useState(false);
   const [addingEducation, setAddingEducation] = useState(false);
-  const [addingPortfolio, setAddingPortfolio] = useState(false);
   const [addingCertification, setAddingCertification] = useState(false);
   const [profile, setProfile] = useState({
     fullName: '',
@@ -23,7 +22,6 @@ const Profile = () => {
     education: [],
     hourlyRate: '',
     availability: 'full-time',
-    portfolio: [],
     certifications: []
   });
 
@@ -39,11 +37,6 @@ const Profile = () => {
     institution: '',
     year: '',
     field: ''
-  });
-  const [newPortfolio, setNewPortfolio] = useState({
-    title: '',
-    description: '',
-    link: ''
   });
   const [newCertification, setNewCertification] = useState({
     name: '',
@@ -165,32 +158,6 @@ const Profile = () => {
     }));
   };
 
-  const handleAddPortfolio = async () => {
-    if (newPortfolio.title && newPortfolio.link) {
-      setAddingPortfolio(true);
-      try {
-        setProfile(prev => ({
-          ...prev,
-          portfolio: [...prev.portfolio, { ...newPortfolio }]
-        }));
-        setNewPortfolio({
-          title: '',
-          description: '',
-          link: ''
-        });
-      } finally {
-        setAddingPortfolio(false);
-      }
-    }
-  };
-
-  const handleRemovePortfolio = (index) => {
-    setProfile(prev => ({
-      ...prev,
-      portfolio: prev.portfolio.filter((_, i) => i !== index)
-    }));
-  };
-
   const handleAddCertification = async () => {
     if (newCertification.name && newCertification.issuer) {
       setAddingCertification(true);
@@ -238,7 +205,6 @@ const Profile = () => {
         education: profile.education,
         hourlyRate: Number(profile.hourlyRate),
         availability: profile.availability,
-        portfolio: profile.portfolio,
         certifications: profile.certifications,
         rating: profile.rating || 0,
         totalProjects: profile.totalProjects || 0,
@@ -264,45 +230,54 @@ const Profile = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">Developer Profile</h3>
-          <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-            {/* Basic Information */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Full Name</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={profile.fullName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  value={profile.phoneNumber}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                />
-              </div>
-            </div>
-
-            {/* Bio */}
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="bg-white shadow rounded-lg p-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-6">Personal Information</h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Bio</label>
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="fullName"
+                id="fullName"
+                value={profile.fullName}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                id="phoneNumber"
+                value={profile.phoneNumber}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white shadow rounded-lg p-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-6">Professional Information</h2>
+          <div className="space-y-6">
+            <div>
+              <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
+                Bio
+              </label>
               <textarea
                 name="bio"
+                id="bio"
                 rows={4}
                 value={profile.bio}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                placeholder="Tell us about yourself..."
               />
             </div>
 
@@ -314,14 +289,14 @@ const Profile = () => {
                   type="text"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
-                  className="block w-full rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="Add a skill"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
                       handleAddSkill();
                     }
                   }}
+                  className="block w-full rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="Add a skill"
                 />
                 <button
                   type="button"
@@ -330,25 +305,26 @@ const Profile = () => {
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 >
                   {addingSkill ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
                   ) : (
-                    <HiOutlinePlus className="h-5 w-5" />
+                    <HiOutlinePlus className="h-5 w-5 mr-2" />
                   )}
+                  Add
                 </button>
               </div>
               <div className="mt-2 flex flex-wrap gap-2">
                 {profile.skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800"
+                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
                   >
                     {skill}
                     <button
                       type="button"
                       onClick={() => handleRemoveSkill(skill)}
-                      className="ml-2 inline-flex items-center p-0.5 rounded-full text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:outline-none"
+                      className="ml-1 inline-flex items-center p-0.5 rounded-full text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500"
                     >
-                      <HiOutlineX className="h-4 w-4" />
+                      <HiOutlineX className="h-3 w-3" />
                     </button>
                   </span>
                 ))}
@@ -395,7 +371,7 @@ const Profile = () => {
                     type="text"
                     value={newExperience.duration}
                     onChange={(e) => setNewExperience(prev => ({ ...prev, duration: e.target.value }))}
-                    placeholder="Duration (e.g., 2 years)"
+                    placeholder="Duration"
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
                   />
                   <textarea
@@ -409,10 +385,10 @@ const Profile = () => {
                   type="button"
                   onClick={handleAddExperience}
                   disabled={addingExperience}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 >
                   {addingExperience ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-indigo-600 mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
                   ) : (
                     <HiOutlinePlus className="h-5 w-5 mr-2" />
                   )}
@@ -476,79 +452,14 @@ const Profile = () => {
                   type="button"
                   onClick={handleAddEducation}
                   disabled={addingEducation}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 >
                   {addingEducation ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-indigo-600 mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
                   ) : (
                     <HiOutlinePlus className="h-5 w-5 mr-2" />
                   )}
                   Add Education
-                </button>
-              </div>
-            </div>
-
-            {/* Portfolio */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Portfolio</label>
-              <div className="mt-1 space-y-4">
-                {profile.portfolio.map((item, index) => (
-                  <div key={index} className="flex items-start justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-900">{item.title}</h4>
-                      <p className="mt-1 text-sm text-gray-700">{item.description}</p>
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-indigo-600 hover:text-indigo-500"
-                      >
-                        View Project
-                      </a>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleRemovePortfolio(index)}
-                      className="text-gray-400 hover:text-gray-500"
-                    >
-                      <HiOutlineX className="h-5 w-5" />
-                    </button>
-                  </div>
-                ))}
-                <div className="grid grid-cols-1 gap-4">
-                  <input
-                    type="text"
-                    value={newPortfolio.title}
-                    onChange={(e) => setNewPortfolio(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Project Title"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                  />
-                  <textarea
-                    value={newPortfolio.description}
-                    onChange={(e) => setNewPortfolio(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Project Description"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                  />
-                  <input
-                    type="url"
-                    value={newPortfolio.link}
-                    onChange={(e) => setNewPortfolio(prev => ({ ...prev, link: e.target.value }))}
-                    placeholder="Project URL"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddPortfolio}
-                  disabled={addingPortfolio}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                >
-                  {addingPortfolio ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-indigo-600 mr-2"></div>
-                  ) : (
-                    <HiOutlinePlus className="h-5 w-5 mr-2" />
-                  )}
-                  Add Portfolio Item
                 </button>
               </div>
             </div>
@@ -609,7 +520,7 @@ const Profile = () => {
                     type="url"
                     value={newCertification.link}
                     onChange={(e) => setNewCertification(prev => ({ ...prev, link: e.target.value }))}
-                    placeholder="Certificate URL (optional)"
+                    placeholder="Certificate URL"
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
                   />
                 </div>
@@ -617,10 +528,10 @@ const Profile = () => {
                   type="button"
                   onClick={handleAddCertification}
                   disabled={addingCertification}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 >
                   {addingCertification ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-indigo-600 mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
                   ) : (
                     <HiOutlinePlus className="h-5 w-5 mr-2" />
                   )}
@@ -629,23 +540,29 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Work Preferences */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Hourly Rate (FCFA)</label>
+                <label htmlFor="hourlyRate" className="block text-sm font-medium text-gray-700">
+                  Hourly Rate ($)
+                </label>
                 <input
                   type="number"
                   name="hourlyRate"
+                  id="hourlyRate"
                   value={profile.hourlyRate}
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
-                  required
+                  min="0"
+                  step="0.01"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Availability</label>
+                <label htmlFor="availability" className="block text-sm font-medium text-gray-700">
+                  Availability
+                </label>
                 <select
                   name="availability"
+                  id="availability"
                   value={profile.availability}
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900"
@@ -656,26 +573,26 @@ const Profile = () => {
                 </select>
               </div>
             </div>
-
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={saving}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-              >
-                {saving ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
-                    Saving...
-                  </>
-                ) : (
-                  'Save Profile'
-                )}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={saving}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {saving ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                Saving...
+              </>
+            ) : (
+              'Save Profile'
+            )}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
