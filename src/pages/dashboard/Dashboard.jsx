@@ -10,6 +10,8 @@ import Messages from './Messages';
 import Chat from './Chat';
 import Payment from './Payment';
 import MyApplications from './MyApplications';
+import FindDevelopers from './FindDevelopers';
+import Portfolio from './Portfolio';
 
 const Dashboard = () => {
   return (
@@ -25,6 +27,8 @@ const Dashboard = () => {
         <Route path="messages" element={<Messages />} />
         <Route path="messages/:userId" element={<Chat />} />
         <Route path="payment/:projectId/:developerId" element={<Payment />} />
+        <Route path="developers" element={<FindDevelopers />} />
+        <Route path="portfolio" element={<Portfolio />} />
       </Routes>
     </DashboardLayout>
   );

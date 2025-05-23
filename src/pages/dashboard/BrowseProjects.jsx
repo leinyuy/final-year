@@ -5,7 +5,7 @@ import { db } from '../../config/firebase';
 import toast from 'react-hot-toast';
 import Modal from '../../components/common/Modal';
 import { Link } from 'react-router-dom';
-import { HiSearch, HiFilter } from 'react-icons/hi';
+import { HiSearch, HiFilter, HiCheck } from 'react-icons/hi';
 
 const BrowseProjects = () => {
   const { user } = useAuth();
@@ -26,6 +26,7 @@ const BrowseProjects = () => {
     estimatedDuration: '',
     durationUnit: 'days'
   });
+  const [appliedProjects, setAppliedProjects] = useState(new Set());
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -41,6 +42,17 @@ const BrowseProjects = () => {
           ...doc.data()
         }));
         setProjects(projectsData);
+
+        // Fetch user's applications
+        const applicationsQuery = query(
+          collection(db, 'applications'),
+          where('developerId', '==', user.uid)
+        );
+        const applicationsSnapshot = await getDocs(applicationsQuery);
+        const appliedProjectIds = new Set(
+          applicationsSnapshot.docs.map(doc => doc.data().projectId)
+        );
+        setAppliedProjects(appliedProjectIds);
       } catch (error) {
         toast.error('Error fetching projects');
       } finally {
@@ -49,7 +61,7 @@ const BrowseProjects = () => {
     };
 
     fetchProjects();
-  }, []);
+  }, [user]);
 
   const filteredProjects = projects.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -185,15 +197,25 @@ const BrowseProjects = () => {
                 </div>
               </div>
               <div className="mt-6">
-                <button
-                  onClick={() => {
-                    setSelectedProject(project);
-                    setIsApplyModalOpen(true);
-                  }}
-                  className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Apply Now
-                </button>
+                {appliedProjects.has(project.id) ? (
+                  <button
+                    disabled
+                    className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-not-allowed flex items-center justify-center"
+                  >
+                    <HiCheck className="h-5 w-5 mr-2" />
+                    Applied
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setSelectedProject(project);
+                      setIsApplyModalOpen(true);
+                    }}
+                    className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Apply Now
+                  </button>
+                )}
               </div>
             </div>
           </div>
