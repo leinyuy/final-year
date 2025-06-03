@@ -4,7 +4,9 @@ import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firesto
 import { db } from '../../config/firebase';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
-import { HiOutlineClock, HiOutlineCurrencyDollar, HiOutlineCalendar, HiOutlineUser } from 'react-icons/hi';
+import { HiOutlineClock, HiOutlineCurrencyDollar, HiOutlineCalendar, HiOutlineUser, HiOutlineDocumentText } from 'react-icons/hi';
+import PaymentHistory from '../../components/payments/PaymentHistory';
+import MilestoneTracker from '../../components/milestones/MilestoneTracker';
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
@@ -13,6 +15,7 @@ const ProjectDetails = () => {
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState([]);
+  const [isDeveloper, setIsDeveloper] = useState(false);
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
@@ -26,6 +29,11 @@ const ProjectDetails = () => {
           const clientDoc = await getDoc(doc(db, 'users', projectData.clientId));
           if (clientDoc.exists()) {
             setClient(clientDoc.data());
+          }
+
+          // Check if current user is the developer
+          if (projectData.developerId === user?.uid) {
+            setIsDeveloper(true);
           }
 
           // Fetch applications if user is the client
@@ -76,7 +84,7 @@ const ProjectDetails = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between items-start">
@@ -129,7 +137,15 @@ const ProjectDetails = () => {
                   <HiOutlineCurrencyDollar className="h-5 w-5 text-gray-400 mr-2" />
                   <div>
                     <p className="text-sm font-medium text-gray-500">Budget Range</p>
-                    <p className="text-gray-900">{project.budget.min} - {project.budget.max} FCFA</p>
+                    <p className="text-gray-900">{new Intl.NumberFormat('fr-CM', {
+                      style: 'currency',
+                      currency: 'XAF',
+                      minimumFractionDigits: 0,
+                    }).format(project.budget.min)} - {new Intl.NumberFormat('fr-CM', {
+                      style: 'currency',
+                      currency: 'XAF',
+                      minimumFractionDigits: 0,
+                    }).format(project.budget.max)}</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -176,7 +192,11 @@ const ProjectDetails = () => {
                       <div>
                         <p className="text-sm font-medium text-gray-900">Developer Application</p>
                         <p className="mt-1 text-sm text-gray-500">
-                          Bid: {application.bidAmount} FCFA • Duration: {application.estimatedDuration.timeframe} {application.estimatedDuration.unit}
+                          Bid: {new Intl.NumberFormat('fr-CM', {
+                            style: 'currency',
+                            currency: 'XAF',
+                            minimumFractionDigits: 0,
+                          }).format(application.bidAmount)} • Duration: {application.estimatedDuration.timeframe} {application.estimatedDuration.unit}
                         </p>
                       </div>
                       <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -196,6 +216,18 @@ const ProjectDetails = () => {
               <p className="mt-4 text-sm text-gray-500">No applications yet</p>
             )}
           </div>
+        ) : isDeveloper ? (
+          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+            <div className="flex items-center space-x-4">
+              <HiOutlineDocumentText className="h-6 w-6 text-gray-400" />
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Project Status</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  You are currently working on this project. Track your progress and manage milestones below.
+                </p>
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
             <div className="flex justify-end">
@@ -208,6 +240,20 @@ const ProjectDetails = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Milestone Tracker Section */}
+      <div className="mt-8">
+        <MilestoneTracker 
+          projectId={projectId} 
+          isClient={user?.uid === project?.clientId} 
+        />
+      </div>
+
+      {/* Payment History Section */}
+      <div className="mt-8">
+        <h2 className="text-lg font-medium text-gray-900 mb-4">Payment History</h2>
+        <PaymentHistory projectId={projectId} />
       </div>
     </div>
   );
