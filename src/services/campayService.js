@@ -141,6 +141,19 @@ class CampayService {
     }
   }
 
+  async getPaymentHistory(startDate, endDate) {
+    try {
+      const response = await this.client.post('/history/', {
+        start_date: startDate,
+        end_date: endDate
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching payment history:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || error.message || 'Failed to fetch payment history');
+    }
+  }
+
   async withdraw({ amount, phoneNumber, provider, description }) {
     try {
       // Validate input parameters

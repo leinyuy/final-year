@@ -6,9 +6,11 @@ import PaymentForm from '../payments/PaymentForm';
 import AddMilestoneForm from './AddMilestoneForm';
 import toast from 'react-hot-toast';
 import { HiCheckCircle, HiOutlineCheckCircle, HiPlus, HiCurrencyDollar } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 
 const MilestoneTracker = ({ projectId, isClient }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [milestones, setMilestones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMilestone, setSelectedMilestone] = useState(null);
@@ -85,11 +87,26 @@ const MilestoneTracker = ({ projectId, isClient }) => {
     setShowPaymentForm(true);
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = async () => {
     setShowPaymentForm(false);
     setSelectedMilestone(null);
     setIsPayingAll(false);
+    
+    // Refresh milestones after successful payment
+    try {
+      const projectDoc = await getDoc(doc(db, 'projects', projectId));
+      if (projectDoc.exists()) {
+        const projectData = projectDoc.data();
+        setMilestones(projectData.milestones || []);
+      }
+    } catch (error) {
+      console.error('Error refreshing milestones:', error);
+    }
+    
     toast.success('Payment processed successfully');
+    
+    // Navigate to the project page to show updated milestone status
+    navigate(`/projects/${projectId}`);
   };
 
   const handleAddMilestoneSuccess = () => {
