@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import ProjectCard from '../components/projects/ProjectCard';
 import { HiOutlineArrowRight, HiOutlineCheckCircle, HiOutlineDocumentText, HiOutlineChat, HiOutlineCurrencyDollar } from 'react-icons/hi';
+import heroImage from '../assets/hero-image.jpg';
 
 const Home = () => {
   const { user } = useAuth();
@@ -77,21 +78,22 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center">
-          <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
+        <img src={heroImage} alt="Hero Image" className="w-full h-full object-cover absolute inset-0 z-0" />
+        <div className="text-left relative z-10 ">
+          <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
             <span className="block">Connect with Top</span>
             <span className="block text-indigo-600">Cameroonian Developers</span>
           </h1>
-          <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+          <p className="mt-3 max-w-md text-base text-white sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
             Find the perfect developer for your project or get hired for your skills. 
             A platform built for Cameroonian freelancers and businesses.
           </p>
-          <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+          <div className="mt-5 max-w-md sm:flex sm:justify-start md:mt-8">
             <div className="rounded-md shadow">
               <Link
                 to="/register"
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-800 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
               >
                 Get Started
               </Link>
@@ -115,17 +117,17 @@ const Home = () => {
           <div className="mt-12">
             <div className="relative">
               {/* Progress Line */}
-              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              {/* <div className="absolute inset-0 flex items-center" aria-hidden="true">
                 <div className="w-full border-t border-gray-300"></div>
-              </div>
+              </div> */}
               
               {/* Steps */}
               <div className="relative flex justify-between">
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full">
+                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full mt-3">
                     <HiOutlineDocumentText className="w-6 h-6 text-white" />
                   </div>
-                  <div className="mt-4 text-center">
+                  <div className="mt-8 text-center">
                     <h3 className="text-lg font-medium text-gray-900">Post a Project</h3>
                     <p className="mt-2 text-sm text-gray-500">
                       Describe your project and set your budget
@@ -134,10 +136,10 @@ const Home = () => {
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full">
+                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full mt-3">
                     <HiOutlineChat className="w-6 h-6 text-white" />
                   </div>
-                  <div className="mt-4 text-center">
+                  <div className="mt-8 text-center">
                     <h3 className="text-lg font-medium text-gray-900">Review Proposals</h3>
                     <p className="mt-2 text-sm text-gray-500">
                       Evaluate developer proposals and chat with candidates
@@ -146,10 +148,10 @@ const Home = () => {
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full">
+                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full mt-3">
                     <HiOutlineCheckCircle className="w-6 h-6 text-white" />
                   </div>
-                  <div className="mt-4 text-center">
+                  <div className="mt-8 text-center">
                     <h3 className="text-lg font-medium text-gray-900">Hire & Collaborate</h3>
                     <p className="mt-2 text-sm text-gray-500">
                       Select the best developer and start working together
@@ -158,10 +160,10 @@ const Home = () => {
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full">
+                  <div className="flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-full mt-3">
                     <HiOutlineCurrencyDollar className="w-6 h-6 text-white" />
                   </div>
-                  <div className="mt-4 text-center">
+                  <div className="mt-8 text-center">
                     <h3 className="text-lg font-medium text-gray-900">Pay Securely</h3>
                     <p className="mt-2 text-sm text-gray-500">
                       Release payments through our secure escrow system

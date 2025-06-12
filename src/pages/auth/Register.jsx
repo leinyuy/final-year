@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import toast from 'react-hot-toast';
@@ -42,6 +42,9 @@ const Register = () => {
         displayName: formData.fullName
       });
 
+      // Send email verification
+      await sendEmailVerification(user);
+
       // Create user document in Firestore
       await setDoc(doc(db, 'users', user.uid), {
         fullName: formData.fullName,
@@ -52,8 +55,8 @@ const Register = () => {
         profileComplete: false,
       });
 
-      toast.success('Account created successfully!');
-      navigate('/dashboard');
+      toast.success('Account created successfully! Please check your email to verify your account.');
+      navigate('/verify-email');
     } catch (error) {
       toast.error(error.message);
     }

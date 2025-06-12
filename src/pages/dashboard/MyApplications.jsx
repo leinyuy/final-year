@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
@@ -31,9 +31,9 @@ const MyApplications = () => {
         const projectsData = {};
         
         for (const projectId of projectIds) {
-          const projectDoc = await getDocs(query(collection(db, 'projects'), where('id', '==', projectId)));
-          if (!projectDoc.empty) {
-            projectsData[projectId] = projectDoc.docs[0].data();
+          const projectDoc = await getDoc(doc(db, 'projects', projectId));
+          if (projectDoc.exists()) {
+            projectsData[projectId] = projectDoc.data();
           }
         }
         

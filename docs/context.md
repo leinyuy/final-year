@@ -53,11 +53,17 @@ A streamlined web application connecting project proposers with freelance develo
 - Application tracking
 
 ### Payment Integration
-- Mobile money gateway integration
+- Mobile money gateway integration (Campay)
 - Escrow payment system
   - Milestone-based releases
   - Two-party confirmation
 - Transaction tracking
+- Developer withdrawal system
+  - Mobile money withdrawal requests
+  - Withdrawal status tracking
+  - Unique reference generation for idempotency
+- Payment history with detailed status tracking
+- Support for multiple mobile money providers (MTN, Orange)
 
 ### Communication
 - Direct messaging system
@@ -247,12 +253,20 @@ A streamlined web application connecting project proposers with freelance develo
 #### payments
 - `id` (string)
 - `contractId` (string) - References contracts
+- `projectId` (string) - References projects
 - `amount` (number)
 - `type` (string) - "milestone" | "deposit" | "refund"
 - `status` (string) - "pending" | "completed" | "failed"
 - `provider` (string) - "mtn" | "orange"
 - `transactionId` (string)
 - `timestamp` (timestamp)
+- `withdrawalStatus` (string) - "pending" | "completed" | "failed"
+- `withdrawalReference` (string)
+- `withdrawalRequestedAt` (timestamp)
+- `operator` (string)
+- `operatorReference` (string)
+- `externalReference` (string) - UUID for idempotency
+- `description` (string)
 
 #### messages
 - `id` (string)
